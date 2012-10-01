@@ -6,26 +6,54 @@
 
 #include "Main.h"
 
-struct AppState
+const int WindowWidth = 800;
+const int WindowHeight = 600;
+
+
+void App::Init(HINSTANCE hInstance, int nCmdShow)
 {
-	GraphicsDevice* 	graphics;
-	FrameTimer		timer;
-	Vec2i			dimensions;
-	ApplicationWindow	window;
-	InputMananger		input;
+	const char* s = "kexe";
+	const String& windowName = s;
+
+	AllocConsole();
+
+	//_state.graphics = NULL;
+
+	g_WndProcContext = &_state.input;
+	_state.window.InitAll(hInstance, nCmdShow, false, WindowWidth, WindowHeight, windowName);
+
 }
 
-class App
+void App::RenderFrame()
 {
-public:
-	void Init(HINSTANCE hInstance, int nCmdShow);
-	void MessageLoop(HINSTANCE hInstance, int nCmdShow);
+}
 
-	void FreeMemory();
+void App::MessageLoop(HINSTANCE hInstance, int nCmdShow)
+{
+	MSG msg;
+	BOOL bGotMsg;
 
-	void RenderFrame();
+	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
-private:
-	AppState	_state;
-	Controller*	_controller;
+	while( WM_QUIT != msg.message)
+	{
+		bGotMsg = PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE);
+		if (bGotMsg)
+		{
+			//String s = String(msg.message);
+			//Console::WriteLine(s);
+
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
+		}
+		else
+		{
+			RenderFrame();
+		}
+	}
+}
+
+void App::FreeMemory()
+{
+	_state.window.FreeMemory();
 }
